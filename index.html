@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Super Lahap – Simulasi Jualan Makanan</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--red:#E8412C;--org:#FF8A1F;--yel:#FFC83D;--cream:#FFF6E0;--ink:#2B1408;--peach:#FFB48A;
+--d:"Bricolage Grotesque","Arial Black",system-ui,sans-serif;--b:"Figtree",system-ui,sans-serif}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;scroll-padding-top:70px}
+body{font-family:var(--b);color:var(--ink);background:var(--yel);overflow-x:hidden;line-height:1.6}
+h1,h2,h3{font-family:var(--d);letter-spacing:-.03em;line-height:1.1}
+button{font:inherit;cursor:pointer}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--ink);outline-offset:3px}
+.wrap{max-width:1100px;margin:0 auto;padding:0 24px}
+
+/* nav */
+.nav{position:fixed;inset:0 0 auto;height:66px;background:#000;color:#fff;z-index:50;display:flex;align-items:center;transition:box-shadow .3s}
+.nav.sc{box-shadow:0 6px 24px rgba(0,0,0,.35)}
+.nav .wrap{display:flex;align-items:center;justify-content:space-between;width:100%}
+.brand{font-family:var(--d);font-weight:700;text-decoration:none;font-size:18px}
+.links{display:flex;gap:26px;align-items:center}
+.links a{font-size:14px;text-decoration:none;opacity:.85;transition:opacity .2s}
+.links a:hover{opacity:1}
+.cartbtn{background:#fff;color:#000;border:0;border-radius:8px;padding:8px 14px;font-weight:600;font-size:13px;display:flex;gap:8px;align-items:center;transition:transform .2s}
+.cartbtn:hover{transform:scale(1.06)}
+.cartbtn b{background:var(--red);color:#fff;border-radius:99px;min-width:20px;height:20px;display:grid;place-items:center;font-size:12px;padding:0 5px}
+.cartbtn.pop{animation:pop .4s}
+@keyframes pop{50%{transform:scale(1.2)}}
+
+/* buttons */
+.btn{display:inline-block;background:var(--org);color:var(--ink);border:2px solid var(--ink);border-radius:8px;padding:12px 28px;font-weight:600;text-decoration:none;box-shadow:0 5px 0 var(--ink);transition:transform .15s,box-shadow .15s}
+.btn:hover{transform:translateY(2px);box-shadow:0 3px 0 var(--ink)}
+.btn:active{transform:translateY(5px);box-shadow:0 0 0 var(--ink)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+
+/* hero */
+.hero{background:var(--red);padding:130px 0 150px;position:relative;color:#fff}
+.hero .wrap{display:grid;grid-template-columns:1.1fr .9fr;gap:30px;align-items:center}
+.mark{font-weight:800;font-size:clamp(88px,15vw,176px);letter-spacing:-.06em;line-height:.78;color:#fff}
+.mark span{display:block;font-size:.36em;margin:0 0 -.1em .52em;letter-spacing:-.04em;color:var(--yel)}
+.hero h2{font-size:clamp(26px,4vw,40px);margin:34px 0 10px;color:var(--ink)}
+.hero p{font-size:19px;margin-bottom:28px;color:var(--ink);font-weight:500}
+.stage{position:relative;aspect-ratio:1;max-width:420px;margin:auto;width:100%}
+.stage svg{width:100%;height:100%;animation:float 5s ease-in-out infinite;filter:drop-shadow(0 18px 0 rgba(43,20,8,.22))}
+.fl{position:absolute;font-size:46px;animation:float 4s ease-in-out infinite;animation-delay:var(--t,0s)}
+@keyframes float{50%{transform:translateY(-16px) rotate(3deg)}}
+.wave{position:absolute;bottom:-1px;left:0;width:100%;height:70px}
+.wave path{fill:var(--yel)}
+
+/* sections */
+section{padding:90px 0}
+.about .wrap{display:grid;grid-template-columns:1fr 1fr;gap:50px;align-items:center}
+.about h2{font-size:clamp(30px,4vw,44px);margin-bottom:18px}
+.about p{font-size:18px;max-width:480px}
+.pizza{max-width:380px;margin:auto;position:relative}
+.pizza svg{width:100%;animation:spin 40s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.pizza .fl{font-size:40px}
+.center{text-align:center}
+.center h2{font-size:clamp(30px,4vw,44px);margin-bottom:12px}
+.sub{font-size:18px;margin:0 auto 40px;max-width:540px}
+
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:26px;margin-top:40px}
+.card{background:var(--cream);border:2px solid var(--ink);border-bottom-width:7px;border-radius:20px;padding:16px 16px 26px;text-align:left;transition:transform .35s cubic-bezier(.2,.8,.2,1)}
+.card:hover{transform:translateY(-8px) rotate(-.6deg)}
+.card .ic{background:var(--peach);border-radius:12px;height:150px;display:grid;place-items:center;font-size:72px;position:relative;margin-bottom:18px;overflow:hidden}
+.card .ic::before{content:"";position:absolute;left:0;right:0;top:50%;height:2px;background:var(--ink);opacity:.7}
+.card .ic i{font-style:normal;position:relative;background:var(--peach);padding:0 14px;line-height:1.2}
+.card h3{font-size:32px;margin-bottom:8px}
+.card p{font-size:15px;color:#6b5240}
+
+/* menu */
+.chips{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-bottom:34px}
+.chip{background:var(--cream);border:2px solid var(--ink);border-radius:99px;padding:7px 18px;font-weight:600;font-size:14px;transition:all .2s}
+.chip:hover{transform:translateY(-2px)}
+.chip.on{background:var(--ink);color:var(--cream)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(235px,1fr));gap:24px;text-align:left}
+.item{background:var(--cream);border:2px solid var(--ink);border-bottom-width:7px;border-radius:20px;padding:14px;display:flex;flex-direction:column;transition:transform .3s}
+.item:hover{transform:translateY(-6px)}
+.item .pic{background:var(--peach);border-radius:12px;height:130px;display:grid;place-items:center;font-size:68px;margin-bottom:12px;position:relative;overflow:hidden}
+.item .pic img{width:100%;height:100%;object-fit:cover}
+.item .pic em{position:absolute;top:8px;left:8px;background:var(--ink);color:var(--cream);font-style:normal;font-size:12px;padding:2px 10px;border-radius:99px;font-weight:600}
+.item h3{font-size:21px}
+.item p{font-size:14px;color:#6b5240;flex:1;margin:4px 0 12px}
+.row{display:flex;justify-content:space-between;align-items:center}
+.price{font-family:var(--d);font-weight:700;font-size:19px;color:var(--red)}
+.qty{display:flex;align-items:center;gap:10px}
+.qty button{width:34px;height:34px;border-radius:50%;border:2px solid var(--ink);background:var(--org);font-weight:700;font-size:18px;line-height:1;transition:transform .15s}
+.qty button:hover{transform:scale(1.15)}
+.qty button:disabled{opacity:.35;transform:none;cursor:not-allowed}
+.qty span{min-width:18px;text-align:center;font-weight:700}
+.sk{height:300px;border-radius:20px;background:linear-gradient(90deg,#ffe9b0 25%,#fff3cf 50%,#ffe9b0 75%);background-size:200% 100%;animation:sh 1.2s infinite}
+@keyframes sh{to{background-position:-200% 0}}
+.status{display:inline-flex;gap:8px;align-items:center;margin-top:26px;background:var(--cream);border:2px solid var(--ink);border-radius:99px;padding:5px 16px;font-size:13px;font-weight:600}
+.status::before{content:"";width:10px;height:10px;border-radius:50%;background:#999}
+.status.ok::before{background:#1fa64a;animation:pulse 1.6s infinite}
+.status.demo::before{background:var(--red)}
+@keyframes pulse{50%{box-shadow:0 0 0 7px rgba(31,166,74,0)}0%{box-shadow:0 0 0 0 rgba(31,166,74,.6)}}
+
+/* dashboard */
+.dash{background:var(--red);color:#fff;position:relative}
+.dash h2,.dash .sub{color:#fff}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-bottom:34px}
+.stat{background:var(--cream);color:var(--ink);border:2px solid var(--ink);border-bottom-width:7px;border-radius:20px;padding:22px;text-align:left}
+.stat small{font-size:14px;color:#6b5240;font-weight:600}
+.stat b{display:block;font-family:var(--d);font-size:clamp(26px,3.4vw,38px);letter-spacing:-.03em;line-height:1.2;margin-top:4px}
+.tbl{background:var(--cream);color:var(--ink);border:2px solid var(--ink);border-bottom-width:7px;border-radius:20px;overflow:auto;text-align:left}
+table{width:100%;border-collapse:collapse;min-width:520px}
+th,td{padding:13px 18px;font-size:14px;border-bottom:1px solid rgba(43,20,8,.15)}
+th{font-family:var(--d);font-size:15px;background:var(--peach)}
+tr:last-child td{border:0}
+td.r,th.r{text-align:right}
+.empty{padding:34px;text-align:center;color:#6b5240}
+
+footer{background:#000;color:#fff;padding:40px 0;text-align:center;font-size:14px}
+footer b{font-family:var(--d);font-size:22px;display:block;margin-bottom:6px}
+#kontak{background:var(--yel)}
+
+/* cart drawer */
+.ov{position:fixed;inset:0;background:rgba(43,20,8,.55);opacity:0;pointer-events:none;transition:opacity .35s;z-index:60}
+.ov.on{opacity:1;pointer-events:auto}
+.drawer{position:fixed;top:0;right:0;height:100%;width:min(430px,100%);background:var(--cream);border-left:3px solid var(--ink);z-index:70;transform:translateX(105%);transition:transform .45s cubic-bezier(.2,.8,.2,1);display:flex;flex-direction:column}
+.drawer.on{transform:none}
+.drawer header{padding:20px 22px;display:flex;justify-content:space-between;align-items:center;border-bottom:2px solid var(--ink)}
+.drawer h3{font-size:26px}
+.x{background:none;border:2px solid var(--ink);border-radius:50%;width:36px;height:36px;font-size:18px}
+.lines{flex:1;overflow:auto;padding:14px 22px}
+.line{display:flex;gap:12px;align-items:center;padding:10px 0;border-bottom:1px dashed rgba(43,20,8,.3);animation:in .35s}
+@keyframes in{from{opacity:0;transform:translateX(24px)}}
+.line .e{font-size:34px}
+.line div{flex:1;font-size:14px}
+.line b{display:block;font-size:15px}
+.form{padding:16px 22px 22px;border-top:2px solid var(--ink);background:#fff0c9}
+.form input{width:100%;padding:11px 14px;border:2px solid var(--ink);border-radius:10px;background:#fff;font:inherit;margin-bottom:10px}
+.form .two{display:grid;grid-template-columns:1fr 100px;gap:10px}
+.tot{display:flex;justify-content:space-between;font-family:var(--d);font-size:22px;font-weight:700;margin:6px 0 14px}
+.form .btn{width:100%;font-size:16px}
+
+/* modal + toast */
+.modal{position:fixed;inset:0;display:grid;place-items:center;z-index:90;pointer-events:none;opacity:0;transition:opacity .3s}
+.modal.on{opacity:1;pointer-events:auto;background:rgba(43,20,8,.6)}
+.box{background:var(--cream);border:3px solid var(--ink);border-bottom-width:9px;border-radius:24px;padding:34px;text-align:center;max-width:380px;margin:20px;transform:scale(.7);transition:transform .45s cubic-bezier(.3,1.6,.5,1)}
+.modal.on .box{transform:none}
+.box .big{font-size:70px;animation:float 2.5s infinite}
+.box h3{font-size:30px;margin:6px 0}
+.box p{margin-bottom:18px}
+.toast{position:fixed;left:50%;bottom:26px;transform:translate(-50%,120px);background:var(--ink);color:#fff;padding:12px 22px;border-radius:12px;z-index:100;transition:transform .4s cubic-bezier(.2,.8,.2,1);max-width:90%;font-size:14px}
+.toast.on{transform:translate(-50%,0)}
+
+/* scroll reveal */
+.rv{opacity:0;transform:translateY(46px) scale(.96);transition:opacity .8s cubic-bezier(.2,.7,.2,1),transform .8s cubic-bezier(.2,.7,.2,1);transition-delay:var(--dl,0s)}
+.rv.l{transform:translateX(-60px)}
+.rv.r{transform:translateX(60px)}
+.rv.in{opacity:1;transform:none}
+.hero .rv{animation:none}
+
+@media(max-width:820px){
+.links a{display:none}
+.hero{padding:110px 0 120px}
+.hero .wrap,.about .wrap{grid-template-columns:1fr}
+.stage{max-width:300px}
+.cards,.stats{grid-template-columns:1fr}
+section{padding:64px 0}
+.about p{max-width:none}
+}
+@media(prefers-reduced-motion:reduce){
+*{animation:none!important;transition-duration:.01ms!important}
+.rv{opacity:1;transform:none}
+html{scroll-behavior:auto}
+}
+</style>
+</head>
+<body>
+
+<header class="nav" id="nav">
+ <div class="wrap">
+  <a class="brand" href="#beranda">Super Lahap</a>
+  <nav class="links">
+   <a href="#tentang">Keunggulan</a><a href="#cara">Cara kerja</a><a href="#menu">Menu</a><a href="#dashboard">Dashboard</a><a href="#kontak">Kontak</a>
+   <button class="cartbtn" id="openCart" aria-label="Buka keranjang">🛒 Keranjang <b id="cartCount">0</b></button>
+  </nav>
+ </div>
+</header>
+
+<main>
+<section class="hero" id="beranda">
+ <div class="wrap">
+  <div>
+   <h1 class="mark rv l"><span>super</span>lahap</h1>
+   <h2 class="rv" style="--dl:.15s">Warung virtual....kinda</h2>
+   <p class="rv" style="--dl:.25s">Simulasi jualan makanan. Menu dan pesanan langsung tersimpan di spreadsheet.</p>
+   <a class="btn rv" style="--dl:.35s" href="#menu">Lihat Menu</a>
+  </div>
+  <div class="stage rv r" style="--dl:.2s">
+   <span class="fl" style="top:2%;left:-4%;--t:.4s">🍟</span>
+   <span class="fl" style="top:10%;right:-2%;--t:1s">🌶️</span>
+   <span class="fl" style="bottom:6%;left:-6%;--t:1.6s">🥤</span>
+   <span class="fl" style="bottom:2%;right:2%;--t:.8s">🍕</span>
+   <svg viewBox="0 0 300 280" aria-label="Ilustrasi burger" role="img" stroke="#2B1408" stroke-width="4" stroke-linejoin="round" stroke-linecap="round">
+    <path d="M40 202H260V214Q260 244 230 244H70Q40 244 40 214Z" fill="#F2A33A"/>
+    <rect x="42" y="168" width="216" height="36" rx="18" fill="#7A3B1D"/>
+    <path d="M40 168H260L246 168L236 192L224 168H84L72 186L60 168Z" fill="#FFC83D"/>
+    <rect x="46" y="150" width="208" height="20" rx="10" fill="#E8412C"/>
+    <path d="M32 142q15 22 30 0t30 0 30 0 30 0 30 0 30 0 30 0 30 0v12q-15 18-30 0t-30 0-30 0-30 0-30 0-30 0-30 0-30 0Z" fill="#7BC043"/>
+    <path d="M38 138C38 52 262 52 262 138Z" fill="#F2A33A"/>
+    <g fill="#FFF6E0" stroke-width="3"><ellipse cx="110" cy="88" rx="10" ry="5" transform="rotate(-20 110 88)"/><ellipse cx="150" cy="74" rx="10" ry="5"/><ellipse cx="190" cy="90" rx="10" ry="5" transform="rotate(25 190 90)"/><ellipse cx="135" cy="108" rx="10" ry="5" transform="rotate(10 135 108)"/><ellipse cx="176" cy="116" rx="10" ry="5" transform="rotate(-15 176 116)"/></g>
+   </svg>
+  </div>
+ </div>
+ <svg class="wave" viewBox="0 0 1200 70" preserveAspectRatio="none" aria-hidden="true"><path stroke="#2B1408" stroke-width="3" d="M0 30Q75 6 150 30T300 30 450 30 600 30 750 30 900 30 1050 30 1200 30V70H0Z"/></svg>
+</section>
+
+<section class="about" id="tentang">
+ <div class="wrap">
+  <div class="pizza rv l">
+   <span class="fl" style="top:-2%;left:4%;--t:.2s">🧀</span>
+   <span class="fl" style="top:4%;right:0;--t:1.2s">🍅</span>
+   <span class="fl" style="bottom:2%;left:0;--t:.7s">🌿</span>
+   <svg viewBox="0 0 300 300" aria-label="Ilustrasi pizza" role="img" stroke="#2B1408" stroke-width="4">
+    <circle cx="150" cy="150" r="130" fill="#E9A64A"/>
+    <circle cx="150" cy="150" r="108" fill="#FFC83D"/>
+    <g fill="#E8412C"><circle cx="110" cy="105" r="19"/><circle cx="190" cy="120" r="19"/><circle cx="150" cy="180" r="19"/><circle cx="92" cy="185" r="15"/><circle cx="215" cy="190" r="14"/><circle cx="150" cy="75" r="14"/></g>
+    <g fill="#7BC043" stroke-width="3"><circle cx="150" cy="130" r="6"/><circle cx="120" cy="150" r="6"/><circle cx="195" cy="160" r="6"/><circle cx="170" cy="95" r="6"/></g>
+   </svg>
+  </div>
+  <div class="rv r" style="--dl:.15s">
+   <h2>Belajar jualan tanpa modal bahan</h2>
+   <p>Super Lahap adalah warung simulasi. Pilih menu, kirim pesanan, lalu lihat stok dan pendapatan berubah di spreadsheet secara langsung. Cocok untuk latihan kasir, tugas sekolah, atau uji coba bisnis kuliner.</p>
+  </div>
+ </div>
+</section>
+
+<section id="cara">
+ <div class="wrap center">
+  <h2 class="rv">Cara kerja</h2>
+  <div class="cards">
+   <div class="card rv"><div class="ic"><i>🍜</i></div><h3>Pilih</h3><p>Buka daftar menu, filter per kategori, lalu tambahkan makanan favorit ke keranjang.</p></div>
+   <div class="card rv" style="--dl:.15s"><div class="ic"><i>🧾</i></div><h3>Pesan</h3><p>Isi nama dan nomor meja, lalu kirim pesanan. Total dihitung otomatis dan masuk ke spreadsheet.</p></div>
+   <div class="card rv" style="--dl:.3s"><div class="ic"><i>😋</i></div><h3>Pantau</h3><p>Stok berkurang dan dashboard memperbarui jumlah pesanan serta pendapatan hari ini.</p></div>
+  </div>
+ </div>
+</section>
+
+<section id="menu" style="padding-top:30px">
+ <div class="wrap center">
+  <h2 class="rv">Menu hari ini</h2>
+  <p class="sub rv">Menu dan stok diambil dari sheet "Menu". Ubah di spreadsheet, tampilan ikut berubah.</p>
+  <div class="chips rv" id="chips"></div>
+  <div class="grid" id="grid"></div>
+  <div class="status demo rv" id="status">Memuat…</div>
+ </div>
+</section>
+
+<section class="dash" id="dashboard">
+ <div class="wrap center">
+  <h2 class="rv">Dashboard penjualan</h2>
+  <p class="sub rv">Ringkasan dari sheet "Pesanan".</p>
+  <div class="stats">
+   <div class="stat rv"><small>Total pesanan</small><b id="sOrders">0</b></div>
+   <div class="stat rv" style="--dl:.12s"><small>Pendapatan</small><b id="sRev">Rp0</b></div>
+   <div class="stat rv" style="--dl:.24s"><small>Menu terlaris</small><b id="sTop">-</b></div>
+  </div>
+  <div class="tbl rv">
+   <table><thead><tr><th>Waktu</th><th>Nama</th><th>Pesanan</th><th class="r">Total</th></tr></thead><tbody id="recent"><tr><td colspan="4" class="empty">Belum ada pesanan.</td></tr></tbody></table>
+  </div>
+ </div>
+</section>
+
+<section id="kontak">
+ <div class="wrap center rv">
+  <h2 style="font-size:clamp(30px,4vw,44px);margin-bottom:12px">Lapar? Pesan sekarang.</h2>
+  <p class="sub">Semua pesanan di sini hanya simulasi, tidak ada makanan yang benar-benar dikirim.</p>
+  <a class="btn" href="#menu">Mulai Pesan</a>
+ </div>
+</section>
+</main>
+
+<footer><b>Super Lahap</b>Simulasi jualan makanan © 2026</footer>
+
+<div class="ov" id="ov"></div>
+<aside class="drawer" id="drawer" aria-label="Keranjang">
+ <header><h3>Keranjang</h3><button class="x" id="closeCart" aria-label="Tutup">✕</button></header>
+ <div class="lines" id="lines"></div>
+ <div class="form">
+  <div class="two"><input id="fName" placeholder="Nama pemesan" maxlength="40" autocomplete="name"><input id="fTable" placeholder="Meja" maxlength="6"></div>
+  <div class="tot"><span>Total</span><span id="cTotal">Rp0</span></div>
+  <button class="btn" id="send" disabled>Kirim pesanan</button>
+ </div>
+</aside>
+
+<div class="modal" id="modal"><div class="box"><div class="big">🎉</div><h3>Pesanan terkirim</h3><p id="mText"></p><button class="btn" id="mClose">Pesan lagi</button></div></div>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+/* animasi scroll: elemen muncul saat masuk layar */
+(function(){
+ var io=("IntersectionObserver" in window)?new IntersectionObserver(function(es){
+  es.forEach(function(e){if(e.isIntersecting){e.target.classList.add("in");io.unobserve(e.target)}});
+ },{threshold:.12,rootMargin:"0px 0px -6% 0px"}):null;
+ window.observeReveal=function(){
+  document.querySelectorAll(".rv:not(.in)").forEach(function(el){io?io.observe(el):el.classList.add("in")});
+ };
+ observeReveal();
+ var nav=document.getElementById("nav");
+ addEventListener("scroll",function(){nav.classList.toggle("sc",scrollY>10)},{passive:true});
+})();
+</script>
+<script src="app.js"></script>
+</body>
+</html>
